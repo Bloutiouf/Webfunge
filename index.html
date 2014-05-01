@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Webfunge</title>
+		<meta charset="UTF-8"/>
+		<link rel="stylesheet" href="bootstrap.min.css"/>
+		<link rel="stylesheet" href="bootstrap-theme.min.css"/>
+		<link rel="stylesheet" href="style.css"/>
+	</head>
+	<body>
+		<canvas id="renderer" width="64" height="64"></canvas>
+		<div id="editor">
+			<textarea id="program">0y2y/12/- 1y3y/12/- 1 8v                            >4y4*SA00@
+                       >5y2P 6y2P 7y2P ++Q 15/-:1f/ wv
+                       |`0-1$z-y9y77                <<
+                       >00y1y4y4*++4/SA0@</textarea>
+			<form id="controls" class="form-inline">
+				<div class="form-group">
+					<button id="compile" class="btn btn-primary">Compile (Ctrl + Enter)</button>
+				</div>
+				<div class="form-group">
+					Load shader:
+					<select class="form-control"></select>
+				</div>
+				<div class="form-group">
+					Resolution:
+					<select class="form-control">
+						<option selected>64x64</option>
+					</select>
+				</div>
+				<div class="form-group">
+					Threads:
+					<select class="form-control">
+						<option>1</option>
+						<option>2</option>
+						<option>4</option>
+						<option selected>8</option>
+						<option>16</option>
+					</select>
+				</div>
+				<div class="form-group checkbox">
+					<label><input type="checkbox" id="wrap"/> Allow wrap</label>
+				</div>
+				<div class="form-group checkbox">
+					<label><input type="checkbox" id="stat"/> Display stats</label>
+				</div>
+			</form>
+		</div>
+		<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="bootstrap.min.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>
