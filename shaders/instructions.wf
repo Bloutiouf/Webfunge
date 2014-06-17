@@ -1,0 +1,202 @@
+    0y1y3y:'V(2V) 12y'm(S)+2/ @
+
+Webfunge
+========
+
+Bored of Shadertoy? Now you can program shaders in Webfunge!
+
+Each pixel is an execution of this program.
+Yes, this text is a program!
+
+Actually only the first line makes sense :)
+It is equivalent to the Shadertoy template:
+
+    void main(void)
+    {
+        vec2 uv = gl_FragCoord.xy / iResolution.xy;
+        gl_FragColor = vec4(uv, 0.5+0.5*sin(iGlobalTime), 1.0);
+    }
+
+but in Webfunge, which is 20% cooler.
+
+--------------------------------------------------------------------------------
+
+Webfunge is a visual stack-based language to inefficiently program shaders.
+
+It is based on Befunge 98 but is not fully compliant with it.
+See http://quadium.net/funge/spec98.html for the original specs.
+
+It is also inspired from Lua, another stack-based language.
+
+Features
+--------
+
+Here are the main differences with Befunge 98.
+
+It is restricted to a 2D hybrid Lahey space (more or less a torus with bounds).
+
+It does not implement concurrency, stack stack.
+
+It treats string as unique value and does not convert characters to their ASCII codes.
+
+It does not allow changing the space (p and s instructions).
+
+# Registers
+
+Registers could be be used as named variables.
+It is easier than storing every variable in the stack.
+The downside of using registers is that you lose awesomeness points.
+
+`'X.` pops the value on top of the stack and stores it in the register `X`. `'X&` restores it.
+
+`3'Yo` pops three values on top of the stack and stores them in the register `Y`. `'Yi` restores them.
+
+# Stack manipulation
+
+`3y` duplicates the forth value in the stack (because the first value is at index 0) and pushes
+it onto the stack. `5z` pops the value on top of the stack and replaces the sixth value in
+the stack.
+
+In the same way, `13p` pushes the values at index 1, 2, and 3 onto the stack, and `13s` pops three values and replaces values at indices 1, 2, and 3.
+
+Indices can be negative, meaning counting down from the top of the stack.
+
+# Subroutines
+
+`173{` jumps to the subroutine at (1, 7) with 3 arguments, that is, 3 values are popped from the stack and pushed onto a new empty stack, which becomes the current stack. The direction is always forced to east.
+
+`2}` returns 2 values from the subroutine, that is, 2 values are popped from the local stack and pushed onto the previous stack, which becomes the current stack back. The cursor's position and direction are also restored.
+
+Registers are global, avoid using them in subroutines.
+
+Instructions
+------------
+
+space   Nothing
+    !   Logical not: b -> not b
+    " * Collects the string until the next " and pushes it: -> s
+    #   Trampoline, jumps over next cell
+    $   Pop: v ->
+    %   Modulo: a, b -> a - b * floor(a/b)
+    & * Load single value from register: s -> a
+    '   Fetch next character and jumps over it: -> c
+    ( * Load semantics: s ->
+    )   Unload semantics
+    *   Multiply: a, b -> a * b
+    +   Add: a, b -> a + b
+    , X
+    -   Substract: a, b -> a - b
+    . * Store single value to register: a, s ->
+    /   Divide: a, b -> a / b
+  0-9   Push number (0 to 9): -> n
+    :   Duplicate: v -> v, v
+    ;   Jump over, nothing executed until next semicolor
+    <   Go west
+    = * Execute JavaScript and push result: s -> v
+    >   Go east
+    ?   Go away, go in a random cardinal direction
+    @   Stop
+  A-Z   Semantics
+    [   Turn left
+    \   Swap: a, b -> b, a
+    ]   Turn right
+    ^   Go north
+    _   East-West If: b ->   go west if b otherwise go east
+    `   Greater Than: a, b -> 1 if a > b otherwise 0
+  a-f   Push number (10 to 15): -> n
+    g   Get: x, y -> c
+    h X
+    i * Load vector from register: s -> v, ... v
+    j   Jump forward: n ->   go n times forward
+    k   Iterate: n ->   execute next instruction n times
+    l * Line return (a line is defined by delta)
+    m X
+    n   Clear stack: ... ->
+    o * Store vector to register: v, ... v, n, s ->
+    p * Get vector from stack: i, n -> v, ... v
+    q   Stop
+    r   Reflect, go backwards
+    s * Replace vector in stack: v, ... v, i, n ->
+    t X
+    u X
+    v   Go south
+    w   Compare: a, b ->   ] if a > b, [ if a < b, otherwise continue forward
+    x   Absolute delta: x, y ->   set delta
+    y * Get from stack: i -> v   v is the value in the stack at index i
+    z * Replace in stack: v, i ->   v replaces the value in the stack at index i
+    { * Jump to subroutine: ..., v, ... v, x, y, n -> v, ... v
+    |   North-South If: b ->   go north if b otherwise go south
+    } * Return from subroutine: v, ... v, n -> ..., v, ... v
+    ~ X
+
+* means not compliant to Befunge 98 specs.
+a, b -> a + b  means it pops b, pops a, and pushes a + b
+Index i can be negative, meaning counting down from the top of the stack.
+
+Semantics
+---------
+
+m (common math)
+  A Abs: a -> abs(a)
+  C Cos: a -> cos(a)
+  E Exp: a -> exp(a)
+  I Min: a, b -> min(a, b)
+  J Max: a, b -> max(a, b)
+  L Log: a -> log(a)
+  P Pi: -> 3.14...
+  Q Sqrt: a -> sqrt(a)
+  S Sin: a -> sin(a)
+  W Power: a, e -> a^e
+  
+M (matrix manipulation)
+  M Multiply: m, ... m, m, ... m, i, j, k -> m, ... m
+  X Rotation around X: n -> ...
+  Y Rotation around Y: n -> ...
+  Z Rotation around Z: n -> ...
+
+V (vector manipulation):
+  A Add: v, ... v, v, ... v, n -> v, ... v
+  D Dot: v, ... v, v, ... v, n = a
+  I Min: v, ... v, v, ... v, n -> v, ... v
+  J Max: v, ... v, v, ... v, n -> v, ... v
+  K Scale: v, ... v, k, n = v, ... v
+  L Length: v, ... v, n = sqrt(v*v + ...)
+  M Mix: v, ... v, v, ... v, t, n = v, ... v
+  N Normalize: v, ... v, n = v, ... v
+  O Modulo: v, ... v, v, ... v, n = v, ... v
+  S Substract: v, ... v, v, ... v, n -> v, ... v
+  T Texture: u, v, i -> r, g, b
+  V Divide: v, ... v, v, ... v, n -> v, ... v
+  W Duplicate: v, ... v, n = v, ... v, v, ... v
+  X Cross: v, ... v, v, ... v = v, ... v   only in 3D
+  Y Multiply: v, ... v, v, ... v, n -> v, ... v
+
+Program
+-------
+
+The program starts with following stack:
+
+* x in [0, resolution[
+* y in [0, resolution[
+* time
+* resolution
+* aspect ratio (width/height)
+
+When the program is done, B, G, and then R is popped off the stack, which means
+you have to push R, G, and B before you exit (values in [0, 1]).
+
+       _         X
+      / \      +--->
+     / ! \   Y |
+    /_____\    v
+
+Misc
+----
+
+Licensed under MIT License.
+
+Press TAB to hide the editor.
+
+Have fun!
+
+Bloutiouf^tmp

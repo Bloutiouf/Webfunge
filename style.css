@@ -7,7 +7,7 @@ html, body {
 	padding: 0;
 }
 
-#renderer, #editor {
+#canvas, #canvas *, #editor {
 	height: 100%;
 	left: 0;
 	position: absolute;

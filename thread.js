@@ -1,46 +1,173 @@
 "use strict";
 
-function Program() {
-	this.code = [];
-	this.mathSemantics = function(command, stack) {
-		switch (command) {
-			case 'A':
-				var v = stack.pop();
-				stack.push(Math.abs(v));
-				break;
-			
-			case 'C':
-				var v = stack.pop();
-				stack.push(Math.cos(v));
-				break;
-			
-			case 'P':
-				var e = stack.pop();
-				var v = stack.pop();
-				stack.push(Math.pow(v, e));
-				break;
-			
-			case 'Q':
-				var v = stack.pop();
-				stack.push(Math.sqrt(v));
-				break;
-			
-			case 'S':
-				var v = stack.pop();
-				stack.push(Math.sin(v));
-				break;
-			
-			default:
-				return false;
-		}
-		return true;
-	};
+function popVector(stack, n) {
+	return stack.splice(stack.length - n, n);
 }
 
-Program.prototype.setBlock = function(width, height, time, array) {
-	this.width = width;
-	this.height = height;
+var semantics = {
+	m: {
+		A: function(stack) {
+			var i = stack.length - 1;
+			stack[i] = Math.abs(stack[i]);
+		},
+		C: function(stack) {
+			var i = stack.length - 1;
+			stack[i] = Math.cos(stack[i]);
+		},
+		E: function(stack) {
+			var i = stack.length - 1;
+			stack[i] = Math.exp(stack[i]);
+		},
+		I: function(stack) {
+			var b = stack.pop();
+			var a = stack.pop();
+			stack.push(Math.min(a, b));
+		},
+		J: function(stack) {
+			var b = stack.pop();
+			var a = stack.pop();
+			stack.push(Math.max(a, b));
+		},
+		L: function(stack) {
+			var i = stack.length - 1;
+			stack[i] = Math.log(stack[i]);
+		},
+		P: function(stack) {
+			stack.push(Math.PI);
+		},
+		Q: function(stack) {
+			var i = stack.length - 1;
+			stack[i] = Math.sqrt(stack[i]);
+		},
+		S: function(stack) {
+			var i = stack.length - 1;
+			stack[i] = Math.sin(stack[i]);
+		},
+		W: function(stack) {
+			var e = stack.pop();
+			var v = stack.pop();
+			stack.push(Math.pow(v, e));
+		}
+	},
+	V: {
+		A: function(stack) {
+			var n = stack.pop();
+			var b = popVector(stack, n);
+			var base = stack.length - n;
+			for (var i = 0; i < n; ++i)
+				stack[base + i] += b[i];
+		},
+		D: function(stack) {
+			var n = stack.pop();
+			var b = popVector(stack, n);
+			var a = popVector(stack, n);
+			var result = 0;
+			for (var i = 0; i < n; ++i)
+				result += a[i] * b[i];
+			stack.push(result);
+		},
+		I: function(stack) {
+			var n = stack.pop();
+			var b = popVector(stack, n);
+			var base = stack.length - n;
+			for (var i = 0; i < n; ++i)
+				stack[base + i] = Math.min(stack[base + i], b[i]);
+		},
+		J: function(stack) {
+			var n = stack.pop();
+			var b = popVector(stack, n);
+			var base = stack.length - n;
+			for (var i = 0; i < n; ++i)
+				stack[base + i] = Math.max(stack[base + i], b[i]);
+		},
+		K: function(stack) {
+			var n = stack.pop();
+			var k = stack.pop();
+			for (var i = 1; i <= n; ++i)
+				stack[stack.length - i] *= k;
+		},
+		L: function(stack) {
+			var n = stack.pop();
+			var length = 0;
+			for (var i = 0; i < n; ++i) {
+				var v = stack.pop();
+				length += v * v;
+			}
+			length = Math.sqrt(length);
+			stack.push(length);
+		},
+		M: function(stack) {
+			var n = stack.pop();
+			var t = stack.pop();
+			var b = popVector(stack, n);
+			var base = stack.length - n;
+			for (var i = 0; i < n; ++i)
+				stack[base + i] = stack[base + i] * (1 - t) + b[i] * t;
+		},
+		N: function(stack) {
+			var n = stack.pop();
+			var length = 0;
+			for (var i = 1; i <= n; ++i) {
+				var v = stack[stack.length - i];
+				length += v * v;
+			}
+			length = Math.sqrt(length);
+			for (var i = 1; i <= n; ++i) {
+				stack[stack.length - i] = stack[stack.length - i] / length;
+			}
+		},
+		O: function(stack) {
+			var n = stack.pop();
+			var b = popVector(stack, n);
+			var base = stack.length - n;
+			for (var i = 0; i < n; ++i)
+				stack[base + i] -= b[i] * Math.floor(stack[base + i] / b[i]);
+		},
+		S: function(stack) {
+			var n = stack.pop();
+			var b = popVector(stack, n);
+			var base = stack.length - n;
+			for (var i = 0; i < n; ++i)
+				stack[base + i] -= b[i];
+		},
+		// T
+		V: function(stack) {
+			var n = stack.pop();
+			var b = popVector(stack, n);
+			var base = stack.length - n;
+			for (var i = 0; i < n; ++i)
+				stack[base + i] /= b[i];
+		},
+		W: function(stack) {
+			var n = stack.pop();
+			var v = stack.slice(-n);
+			stack.push.apply(stack, v);
+		},
+		X: function(stack) {
+			var b = popVector(stack, 3);
+			var a = popVector(stack, 3);
+			stack.push(a[1] * b[2] - a[2] * b[1]);
+			stack.push(a[2] * b[0] - a[0] * b[2]);
+			stack.push(a[0] * b[1] - a[1] * b[0]);
+		},
+		Y: function(stack) {
+			var n = stack.pop();
+			var b = popVector(stack, n);
+			var base = stack.length - n;
+			for (var i = 0; i < n; ++i)
+				stack[base + i] *= b[i];
+		}
+	}
+};
+
+function Program() {
+	this.code = ['@'];
+}
+
+Program.prototype.setBlock = function(time, resolution, aspectRatio, array) {
 	this.time = time;
+	this.resolution = resolution;
+	this.aspectRatio = aspectRatio;
 	this.array = array;
 };
 
@@ -53,13 +180,24 @@ Program.prototype.getColor = function(x, y, offset) {
 	var cursorY = 0;
 	var deltaX = 1;
 	var deltaY = 0;
-	var stack = [x, y, this.width, this.height, this.time];
-	var loadedSemantics = [this.mathSemantics];
+	var stack = [x, y, this.time, this.resolution, this.aspectRatio];
+	var files = {};
+	var loadedSemantics = [];
+	var calls = [];
 	var running = true;
 	var stringMode = false;
 	
-	while (running) {
-		var c = this.code.length > cursorY && this.code[cursorY][cursorX] || ' ';
+	var steps = 10000;
+	
+	var that = this;
+	
+	function reflect() {
+		deltaX = -deltaX;
+		deltaY = -deltaY;
+	}
+	
+	function execute() {
+		var c = that.code.length > cursorY && that.code[cursorY][cursorX] || ' ';
 		if (stringMode) {
 			if (c === '"')
 				stringMode = false;
@@ -94,17 +232,32 @@ Program.prototype.getColor = function(x, y, offset) {
 				case '%':
 					var b = stack.pop();
 					var a = stack.pop();
-					stack.push(a % b);
+					//stack.push(a % b);
+					stack.push(a - b * Math.floor(a / b));
+					break;
+					
+				case '&':
+					var s = stack.pop();
+					stack.push(files[s]);
 					break;
 					
 				case '\'':
 					cursorX += deltaX;
 					cursorY += deltaY;
-					stack.push(this.code[cursorY][cursorX]);
+					stack.push(that.code[cursorY][cursorX]);
 					break;
 					
 				case '(':
+					var s = stack.pop();
+					var sem = semantics[s];
+					if (sem)
+						loadedSemantics.push(sem);
+					else
+						reflect();
+					break;
+					
 				case ')':
+					loadedSemantics.pop();
 					break;
 					
 				case '*':
@@ -119,10 +272,18 @@ Program.prototype.getColor = function(x, y, offset) {
 					stack.push(a + b);
 					break;
 					
+				// no , Output Character
+					
 				case '-':
 					var b = stack.pop();
 					var a = stack.pop();
 					stack.push(a - b);
+					break;
+					
+				case '.':
+					var s = stack.pop();
+					var a = stack.pop();
+					files[s] = a;
 					break;
 					
 				case '/':
@@ -179,7 +340,7 @@ Program.prototype.getColor = function(x, y, offset) {
 					do {
 						cursorX += deltaX;
 						cursorY += deltaY;
-					} while (this.code[cursorY][cursorX] !== ';');
+					} while (that.code[cursorY][cursorX] !== ';');
 					break;
 					
 				case '?':
@@ -200,6 +361,11 @@ Program.prototype.getColor = function(x, y, offset) {
 				case '<':
 					deltaX = -1;
 					deltaY = 0;
+					break;
+					
+				case '=':
+					var s = stack.pop();
+					stack.push(eval(s));
 					break;
 					
 				case '>':
@@ -267,13 +433,20 @@ Program.prototype.getColor = function(x, y, offset) {
 					stack.push(15);
 					break;
 					
-				case 'g':
+				case 'g': // no offset
 					var y = stack.pop();
 					var x = stack.pop();
-					if (this.code.length > y)
-						stack.push(this.code[y][x] || ' ');
+					if (that.code.length > y)
+						stack.push(that.code[y][x] || ' ');
 					else
 						stack.push(' ');
+					break;
+					
+				// no h Go High/98/3D
+					
+				case 'i':
+					var s = stack.pop();
+					stack.push.apply(stack, files[s]);
 					break;
 					
 				case 'j':
@@ -282,20 +455,59 @@ Program.prototype.getColor = function(x, y, offset) {
 					cursorY += n * deltaY;
 					break;
 					
+				case 'k':
+					var n = stack.pop();
+					cursorX += deltaX;
+					cursorY += deltaY;
+					for (var i = 0; i < n; ++i)
+						execute();
+					break;
+					
+				// no l Go Low/98/3D
+					
+				// no m High-Low If/98/3D
+					
 				case 'n':
 					stack = [];
 					break;
 					
-				// no p, changing code is not allowed
+				case 'o':
+					var s = stack.pop();
+					var n = stack.pop();
+					files[s] = stack.splice(stack.length - n, n);
+					break;
+					
+				case 'p':
+					var n = stack.pop();
+					var i = stack.pop();
+					if (i < 0)
+						i = stack.length + i;
+					for (var j = i; j < i + n; ++j)
+						stack.push(stack[j]);
+					break;
 					
 				case 'q':
 					running = false;
 					break;
 					
 				case 'r':
-					deltaX = -deltaX;
-					deltaY = -deltaY;
+					reflect();
 					break;
+					
+				case 's':
+					var n = stack.pop();
+					var i = stack.pop();
+					if (i < 0)
+						i = stack.length + i;
+					var v = popVector(stack, n);
+					v.unshift(n);
+					v.unshift(i);
+					stack.splice.apply(stack, v);
+					break;
+					
+				// no t Split/98/c
+					
+				// no u Stack Under Stack/98
 					
 				case 'v':
 					deltaX = 0;
@@ -323,16 +535,36 @@ Program.prototype.getColor = function(x, y, offset) {
 					
 				case 'y':
 					var i = stack.pop();
-					if (i >= 0)
-						stack.push(stack[i]);
-					else
-						stack.push(stack[stack.length + i]);
+					if (i < 0)
+						i = stack.length + i;
+					stack.push(stack[i]);
 					break;
 					
 				case 'z':
-					var v = stack.pop();
 					var i = stack.pop();
+					if (i < 0)
+						i = stack.length + i;
+					var v = stack.pop();
 					stack[i] = v;
+					break;
+					
+				case '{':
+					var n = stack.pop();
+					var y = stack.pop();
+					var x = stack.pop();
+					var v = popVector(stack, n);
+					calls.push({
+						x: cursorX,
+						y: cursorY,
+						dx: deltaX,
+						dy: deltaY,
+						s: stack
+					});
+					cursorX = x - 1;
+					cursorY = y;
+					deltaX = 1;
+					deltaY = 0;
+					stack = v;
 					break;
 					
 				case '|':
@@ -341,19 +573,37 @@ Program.prototype.getColor = function(x, y, offset) {
 					deltaX = 0;
 					break;
 					
-				default:
-					var ascii = this.code[cursorY].charCodeAt(cursorX);
+				case '}':
+					var n = stack.pop();
+					var v = popVector(stack, n);
+					var call = calls.pop();
+					cursorX = call.x;
+					cursorY = call.y;
+					deltaX = call.dx;
+					deltaY = call.dy;
+					stack = call.s.concat(v);
+					break;
+					
+				// no ~ Input Character
+					
+				default: // A-Z
+					var ascii = c.charCodeAt(0);
 					if (ascii >= 65 && ascii <= 90) {
-						for (var i = loadedSemantics.length - 1; i >= 0; --i)
-							if (loadedSemantics[i](c, stack))
+						for (var i = loadedSemantics.length - 1; i >= 0; --i) {
+							var instruction = loadedSemantics[i][c];
+							if (instruction && instruction(stack) !== false)
 								break;
+						}
 						if (i < 0) {
-							deltaX = -deltaX;
-							deltaY = -deltaY;
+							reflect()
 						}
 					}
 					break;
 			}
+	}
+	
+	while (running && --steps) {
+		execute();
 		
 		cursorX += deltaX;
 		cursorY += deltaY;
@@ -382,16 +632,17 @@ addEventListener('message', function(e) {
 			
 		case 'render':
 			var time = data[1];
-			var width = data[2];
-			var height = data[3];
+			var resolution = data[2];
+			var aspectRatio = data[3];
 			var blockHeight = data[4];
 			var index = data[5];
-			var array = new Uint8ClampedArray(width * blockHeight * 4);
-			program.setBlock(width, height, time, array);
+			var blockBase = blockHeight * index;
+			var array = new Uint8ClampedArray(resolution * blockHeight * 4);
+			program.setBlock(time, resolution, aspectRatio, array);
 			var offset = 0;
 			for (var y = 0; y < blockHeight; ++y)
-				for (var x = 0; x < width; ++x) {
-					program.getColor(x, y + blockHeight * index, offset);
+				for (var x = 0; x < resolution; ++x) {
+					program.getColor(x, y + blockBase, offset);
 					offset += 4;
 				}
 			postMessage(array, [array.buffer]);
