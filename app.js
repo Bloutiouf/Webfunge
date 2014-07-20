@@ -46,7 +46,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/reference.html', function(req, res) {
-	fs.readFile('reference.md', {
+	fs.readFile(path.join(__dirname, 'reference.md'), {
 		encoding: 'utf8'
 	}, function(err, md) {
 		if (err)
