@@ -1,0 +1,19 @@
+{
+  "name": "webfunge",
+  "version": "0.0.0",
+  "description": "Webfunge",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bloutiouf",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.6.1",
+    "marked": "^0.3.2",
+    "marked-toc": "^0.2.6",
+    "nib": "^1.0.3",
+    "stylus": "^0.47.2",
+    "jade": "^1.4.2"
+  }
+}

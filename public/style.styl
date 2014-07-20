@@ -1,0 +1,94 @@
+darker()
+	background-color: rgba(32, 32, 32, 0.2)
+	
+darkest()
+	background-color: rgba(32, 32, 32, 0.6)
+
+*,
+*:before,
+*:after
+	box-sizing: border-box
+
+html,
+body
+	margin: 0
+	padding: 0
+
+#canvas,
+#canvas *,
+#editor
+	height: 100%
+	left: 0
+	position: absolute
+	width: 100%
+	top: 0
+
+#editor
+	padding: 20px
+	padding-bottom: 70px
+
+#program
+	border: 0
+	color: #fff
+	darker()
+	font-family: monospace
+	height: 100%
+	margin: 0
+	width: 100%
+
+#reference
+	bottom: 70px
+	color: #fff
+	darker()
+	display: none
+	position: absolute
+	right: 20px
+	top: 20px
+	width: 600px
+		
+	> div
+		left: 0
+		bottom: 0
+		overflow: auto
+		padding: 10px
+		position: absolute
+		top: 0
+		width: 100%
+	
+	> ul
+		bottom: 0
+		darker()
+		list-style-type: none
+		padding: 5px 10px
+		position: absolute
+		right: 20px
+		
+		ul
+			padding-left: 20px
+	
+	a
+		color: white
+	
+	th, td
+		padding: 5px
+	
+	td
+		border-top: 1px solid #ddd
+		
+	tr.temporary
+		darkest()
+		font-weight: bold
+
+#controls
+	bottom: 20px
+	left: 20px
+	position: absolute
+	right: 20px
+
+#controls > form > *
+	margin-right: 20px
+
+#stats
+	position: absolute
+	right: 0
+	top: 0
