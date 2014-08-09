@@ -3,9 +3,22 @@ html(ng-app="Webfunge" ng-controller="Layout")
 	head
 		meta(charset='UTF-8')
 		title Webfunge
+		
 		link(href='/bootstrap.min.css', rel='stylesheet')
 		link(href='/bootstrap-theme.min.css', rel='stylesheet')
 		link(href='/style.css', rel='stylesheet')
+		
+		meta(name='author', content='Bloutiouf aka Jonathan Giroux')
+		meta(name='description', content='Program your shaders in Webfunge and become 20% cooler!')
+		meta(property='og:description', content='Program your shaders in Webfunge and become 20% cooler!')
+		meta(property='og:image', content='http://webfunge.bloutiouf.com/image.png')
+		meta(property='og:site_name', content='Webfunge')
+		meta(property='og:title', content='Webfunge')
+		meta(property='og:type', content='website')
+		meta(property='og:url', content='http://webfunge.bloutiouf.com/')
+		meta(name='twitter:card', content='summary')
+		meta(name='twitter:creator', content='@Bloutiouf')
+		link(href='https://plus.google.com/+JonathanGiroux', rel='author')
 	body
 		#canvas
 		#editor
