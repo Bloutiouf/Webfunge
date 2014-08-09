@@ -19,13 +19,13 @@ html(ng-app="Webfunge" ng-controller="Layout")
 				form.form-inline
 					button#compile.btn.btn-primary.form-group(ng-click="setCode()") Compile (Ctrl + Enter)
 					.form-group
-						label(for='shader') Shader 
+						label(for='shader') Shader
 						select#shader.form-control(ng-change="changeShader()" ng-model="shader" ng-options="shader.name for shader in shaders")
 					.form-group
-						label(for='resolution') Resolution 
+						label(for='resolution') Resolution
 						select#resolution.form-control(ng-change="changeResolution()" ng-model="resolution" ng-options="resolution for resolution in resolutions")
 					.form-group
-						label(for='threads') Threads 
+						label(for='threads') Threads
 						select#threads.form-control(ng-change="changeThreadCount()" ng-model="threadCount" ng-options="count for count in threadCounts")
 					.form-group.btn-group(data-toggle='buttons')
 						label.btn.btn-primary(ng-click="changeStats()")

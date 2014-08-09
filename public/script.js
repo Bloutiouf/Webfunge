@@ -292,8 +292,10 @@ angular.module('Webfunge', [])
 			}
 		}
 		
-		if (i === n)
+		if (i === n) {
 			$reference.hide();
+			temporaryTr = null;
+		}
 	}
 	
 	function hideTemporaryReference() {

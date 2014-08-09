@@ -63,7 +63,7 @@ app.get('/reference.html', function(req, res) {
 		res.send(output);
 		
 		if (app.get('env') !== 'development')
-			fs.writeFileSync(path.join(__dirname, 'generated', 'reference.html'));
+			fs.writeFileSync(path.join(__dirname, 'generated', 'reference.html'), output);
 	});
 });
 
