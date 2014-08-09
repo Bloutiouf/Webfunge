@@ -318,4 +318,4 @@ If you use | then you get
 a character both as code instruction and data value | +10
 `l` in a non-cardinal direction | +10
 the same character from different paths | +5
-`l` in the west direction | -10
+`l` in the east direction | -10
