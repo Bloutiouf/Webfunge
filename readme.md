@@ -41,9 +41,7 @@ It is restricted to a 2D hybrid Lahey space (more or less a torus with bounds).
 
 It does not implement concurrency, stack stack.
 
-It treats string as unique value and does not convert characters to their ASCII codes.
-
-It does not allow changing the space (p and s instructions).
+It does not allow changing the space (p and s instructions have been replaced).
 
 Authors
 -------

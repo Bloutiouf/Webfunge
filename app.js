@@ -41,11 +41,11 @@ app.use(stylus.middleware({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'generated')));
 
-app.get('/', function(req, res) {
-	res.render('index');
+app.use('/shaders/welcome.wf', function(req, res) {
+	res.sendFile(path.join(__dirname, 'readme.md'));
 });
 
-app.get('/reference.html', function(req, res) {
+app.use('/reference.html', function(req, res) {
 	fs.readFile(path.join(__dirname, 'reference.md'), {
 		encoding: 'utf8'
 	}, function(err, md) {
@@ -65,6 +65,10 @@ app.get('/reference.html', function(req, res) {
 		if (app.get('env') !== 'development')
 			fs.writeFileSync(path.join(__dirname, 'generated', 'reference.html'), output);
 	});
+});
+
+app.use(function(req, res) {
+	res.render('index');
 });
 
 if (require.main === module)
