@@ -1,4 +1,5 @@
-var express = require('express'),
+var config = require('config-path')(__dirname + "/config.yml"),
+	express = require('express'),
 	fs = require('fs'),
 	marked = require('marked'),
 	markedToc = require('marked-toc')
@@ -22,7 +23,7 @@ marked.setOptions({
 
 var app = module.exports = express();
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', config.express.port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 

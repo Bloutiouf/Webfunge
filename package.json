@@ -9,11 +9,12 @@
   "author": "Bloutiouf",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.6.1",
+    "config-path": "^1.0.2",
+    "express": "^4.10.6",
+    "jade": "^1.8.2",
     "marked": "^0.3.2",
-    "marked-toc": "^0.2.6",
-    "nib": "^1.0.3",
-    "stylus": "^0.47.2",
-    "jade": "^1.4.2"
+    "marked-toc": "^0.2.8",
+    "nib": "^1.0.4",
+    "stylus": "^0.47.3"
   }
 }
